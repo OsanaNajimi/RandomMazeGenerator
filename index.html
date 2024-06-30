@@ -29,15 +29,47 @@
           </div>
         </div>
         <div class="opt-wrapper">
-          <button id="start" onclick="run()"><h3>START</h3></button>
-          <button id="reset" onclick="reset()"><h3>RESET</h3></button>
-          <div class="checkbox">
-            <input id="showOrigin" type="checkbox" checked />
-            <label for="showOrigin">show origin</label>
+          <button id="start" class="button" onclick="run()">
+            <h3>START</h3>
+          </button>
+          <button id="reset" class="button" onclick="reset()">
+            <h3>RESET</h3>
+          </button>
+          <div class="checkboxes">
+            <div class="checkbox">
+              <input id="showOrigin" type="checkbox" checked />
+              <label for="showOrigin">show origin</label>
+            </div>
+            <div class="checkbox">
+              <input id="showPath" type="checkbox" />
+              <label for="showPath">show path</label>
+            </div>
           </div>
         </div>
       </div>
       <div class="maze"></div>
+      <div id="controller">
+        <div>
+          <button id="U" class="controller-parts" onclick="move('up')"></button>
+          <button
+            id="L"
+            class="controller-parts"
+            onclick="move('left')"
+          ></button>
+        </div>
+        <div>
+          <button
+            id="R"
+            class="controller-parts"
+            onclick="move('right')"
+          ></button>
+          <button
+            id="D"
+            class="controller-parts"
+            onclick="move('down')"
+          ></button>
+        </div>
+      </div>
     </div>
   </body>
   <script src="index.js"></script>

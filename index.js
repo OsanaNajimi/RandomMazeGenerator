@@ -40,7 +40,68 @@ class Maze {
 }
 
 let maze;
-let running = false;
+let running;
+let player;
+
+function erasePath() {
+  let grids = document.querySelectorAll(".gridCol");
+  grids.forEach((grid) => {
+    grid.classList.remove("path");
+  });
+}
+
+function bfs() {
+  erasePath();
+  let queue = [];
+  let visited = Array(maze.width * maze.height).fill(false);
+  let from = Array(maze.width * maze.height).fill(-1);
+  visited[player] = true;
+  queue.push(player);
+  while (queue.length > 0) {
+    let current = queue.shift(); //pop
+    let current_grid = document.getElementById(`grid${current}`);
+    if (current === maze.width * maze.height - 1) {
+      while (current > 0) {
+        current_grid = document.getElementById(`grid${current}`);
+        current_grid.classList.add("path");
+        current = from[current];
+      }
+      break;
+    }
+    if (current_grid.classList.contains("top_connected")) {
+      let neighbor = current - maze.width;
+      if (!visited[neighbor]) {
+        visited[neighbor] = true;
+        from[neighbor] = current;
+        queue.push(neighbor);
+      }
+    }
+    if (current_grid.classList.contains("right_connected")) {
+      let neighbor = current + 1;
+      if (!visited[neighbor]) {
+        visited[neighbor] = true;
+        from[neighbor] = current;
+        queue.push(neighbor);
+      }
+    }
+    if (current_grid.classList.contains("bottom_connected")) {
+      let neighbor = current + maze.width;
+      if (!visited[neighbor]) {
+        visited[neighbor] = true;
+        from[neighbor] = current;
+        queue.push(neighbor);
+      }
+    }
+    if (current_grid.classList.contains("left_connected")) {
+      let neighbor = current - 1;
+      if (!visited[neighbor]) {
+        visited[neighbor] = true;
+        from[neighbor] = current;
+        queue.push(neighbor);
+      }
+    }
+  }
+}
 
 function updateGrid(id) {
   let grid = document.getElementById(`grid${id}`);
@@ -92,7 +153,7 @@ function updateOrigin() {
     neighbors.push(["right", maze.origin + 1]);
   }
   if (Math.floor(maze.origin / maze.width) != maze.height - 1) {
-    neighbors.push(["bottom", maze.origin + +maze.width]);
+    neighbors.push(["bottom", maze.origin + maze.width]);
   }
   if (maze.origin % maze.width != 0) {
     neighbors.push(["left", maze.origin - 1]);
@@ -107,6 +168,9 @@ function updateOrigin() {
   updateGrid(tmp);
   let new_origin_grid = document.getElementById(`grid${new_origin}`);
   new_origin_grid.classList.add("origin");
+  if (showPath.checked) {
+    bfs();
+  }
   timeouts = [1000, 50, 0];
   setTimeout(updateOrigin, timeouts[speed.value - 1]);
 }
@@ -128,7 +192,8 @@ function reset() {
   start.innerHTML = "<h3>START</h3>";
   start.setAttribute("id", "start");
   running = false;
-  maze = new Maze(gridWidth.value, gridHeight.value);
+  player = 0;
+  maze = new Maze(Number(gridWidth.value), Number(gridHeight.value));
   mazecontainer.innerHTML = "";
   let id = 0;
   for (let i = 0; i < gridHeight.value; i++) {
@@ -154,10 +219,19 @@ function reset() {
       id++;
     }
   }
+  let player_grid = document.getElementById("grid0");
+  player_grid.classList.add("player");
+  let exit_grid = document.getElementById(
+    `grid${gridWidth.value * gridHeight.value - 1}`
+  );
+  exit_grid.classList.add("exit");
   for (let e of stylesheet.cssRules) {
     if (e.selectorText === ".gridRow") {
       e.style.width = `${15 * gridWidth.value}px`;
     }
+  }
+  if (showPath.checked) {
+    bfs();
   }
 }
 
@@ -190,5 +264,58 @@ showOrigin.addEventListener("change", function () {
     originRule.style.setProperty("background-color", "#f55");
   } else {
     originRule.style.setProperty("background-color", "transparent");
+  }
+});
+
+showPath.addEventListener("change", function () {
+  if (this.checked) {
+    bfs();
+  } else {
+    erasePath();
+  }
+});
+
+function move(direction) {
+  let player_grid = document.querySelector(".player");
+  if (direction === "up") {
+    if (player_grid.classList.contains("top_connected")) {
+      player = player - maze.width;
+    }
+  }
+  if (direction === "right") {
+    if (player_grid.classList.contains("right_connected")) {
+      player = player + 1;
+    }
+  }
+  if (direction === "down") {
+    if (player_grid.classList.contains("bottom_connected")) {
+      player = player + maze.width;
+    }
+  }
+  if (direction === "left") {
+    if (player_grid.classList.contains("left_connected")) {
+      player = player - 1;
+    }
+  }
+  player_grid.classList.remove("player");
+  player_grid = document.getElementById(`grid${player}`);
+  player_grid.classList.add("player");
+  if (showPath.checked) {
+    bfs();
+  }
+}
+
+document.body.addEventListener("keydown", (ev) => {
+  if (ev.key === "ArrowUp") {
+    move("up");
+  }
+  if (ev.key === "ArrowRight") {
+    move("right");
+  }
+  if (ev.key === "ArrowDown") {
+    move("down");
+  }
+  if (ev.key === "ArrowLeft") {
+    move("left");
   }
 });

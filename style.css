@@ -37,7 +37,7 @@ body {
   margin: auto 0;
 }
 
-button {
+.button {
   border: none;
   border-radius: 5px;
   padding: 5px 30px;
@@ -56,6 +56,10 @@ button {
   background-color: #f55;
 }
 
+.maze {
+  margin: 10px 0;
+}
+
 .gridCol {
   height: 15px;
   width: 15px;
@@ -67,6 +71,7 @@ button {
   width: 150px;
   margin: auto;
 }
+
 .top_connected {
   border-top: 1px solid transparent;
 }
@@ -82,6 +87,48 @@ button {
 .left_connected {
   border-left: 1px solid transparent;
 }
+
+.path {
+  background-color: #cfc;
+}
+
 .origin {
+  background-color: #55f;
+}
+
+.player {
+  background-color: #5c5;
+}
+
+.exit {
   background-color: #f55;
+}
+
+#controller {
+  width: 100px;
+  margin: auto;
+  display: flex;
+  transform: rotate(45deg);
+}
+
+.controller-parts {
+  width: 50px;
+  height: 50px;
+  margin: 0 1px;
+}
+
+#U {
+  border-radius: 50px 0 0 0;
+}
+
+#R {
+  border-radius: 0 50px 0 0;
+}
+
+#D {
+  border-radius: 0 0 50px 0;
+}
+
+#L {
+  border-radius: 0 0 0 50px;
 }
